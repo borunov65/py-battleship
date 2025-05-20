@@ -38,9 +38,10 @@ class Ship:
 class Battleship:
     def __init__(self, ships: list) -> None:
         self.ships = [Ship(*ship) for ship in ships]
-        self.field = {tuple((deck.row, deck.column)
-                            for deck in ship.decks): ship
-                      for ship in self.ships}
+        self.field = {}
+        for ship in self.ships:
+            for deck in ship.decks:
+                self.field[deck.row, deck.column, ] = ship
 
     def _validate_field(self, ships: list) -> None:
         if len(ships) != 10:
@@ -70,11 +71,12 @@ class Battleship:
                 self.neighbor_cell.append((ship[0][0] + i, ship[1][0] + 1))
         for cell in self.neighbor_cell:
             for ship in self.ships:
-                if cell in ship.decks:
-                    raise ValueError
+                for deck in ship.decks:
+                    if cell == deck:
+                        raise ValueError
 
     def fire(self, location: tuple) -> str:
-        for decks, ship in self.field.items():
-            if location in decks:
+        for coord, ship in list(self.field.items()):
+            if location == coord:
                 return ship.fire(*location)
         return "Miss!"
