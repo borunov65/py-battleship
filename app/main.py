@@ -50,13 +50,13 @@ class Battleship:
         ship_3 = 0
         ship_4 = 0
         for ship in ships:
-            if len(ship.dacks) == 1:
+            if len(ship.decks) == 1:
                 ship_1 += 1
-            elif len(ship.dacks) == 2:
+            elif len(ship.decks) == 2:
                 ship_2 += 1
-            elif len(ship.dacks) == 3:
+            elif len(ship.decks) == 3:
                 ship_3 += 1
-            elif len(ship.dacks) == 4:
+            elif len(ship.decks) == 4:
                 ship_4 += 1
         if ship_1 != 4 or ship_2 != 3 or ship_3 != 2 or ship_4 != 1:
             raise ValueError
@@ -69,8 +69,9 @@ class Battleship:
                 self.neighbor_cell.append((ship[0][0] + i, ship[1][0] - 1))
                 self.neighbor_cell.append((ship[0][0] + i, ship[1][0] + 1))
         for cell in self.neighbor_cell:
-            if Ship.get_deck(*cell) is not None:
-                raise ValueError
+            for ship in self.ships:
+                if cell in ship.decks:
+                    raise ValueError
 
     def fire(self, location: tuple) -> str:
         for decks, ship in self.field.items():
